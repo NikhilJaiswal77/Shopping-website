@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef3f7;
+      text-align: center;
+      padding: 40px;
+    }
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    .order-id {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #1e88e5;
+    }
+    .status-pending {
+      color: red;
+      font-weight: bold;
+    }
+    .items {
+      text-align: left;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>✅ Thank you for your order!</h2>
+    <p>Please <strong>note your Order ID</strong> to track your order status.</p>
+    <p class="order-id" id="orderId"></p>
+    <p>Status: <span class="status-pending">Pending</span></p>
+    <div id="summary" class="items"></div>
+
+    <p style="margin-top:30px;">
+      🕵️‍♀️ You can track your order <a href="track.html">here</a>
+    </p>
+  </div>
+
+  <script>
+    const orderId = localStorage.getItem("latestOrderId");
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const order = orders.find(o => o.id === orderId);
+
+    if (!order) {
+      document.getElementById("orderId").innerText = "Order not found.";
+    } else {
+      document.getElementById("orderId").innerText = order.id;
+
+      let itemsHtml = order.items.map(i => 
+        `• ${i.name} × ${i.quantity} = ₹${i.subtotal}`
+      ).join("<br>");
+
+      document.getElementById("summary").innerHTML = `
+        <p><strong>Name:</strong> ${order.name}<br>
+        <strong>Mobile:</strong> ${order.mobile}<br>
+        <strong>Total:</strong> ₹${order.total}</p>
+        <p><strong>Items:</strong><br>${itemsHtml}</p>
+      `;
+    }
+  </script>
+</body>
+</html>

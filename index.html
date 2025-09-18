@@ -1,0 +1,731 @@
+<!-- Save as index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manoj Kirana Store</title>
+  
+  <style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+  }
+
+  header {
+    background: #1e90ff;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+  }
+
+  #cart-count {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background: white;
+    color: #1e90ff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product {
+  background: #fff;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.product:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.product h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  min-height: 40px;
+}
+
+.product p {
+  font-size: 14px;
+  font-weight: bold;
+  color: #B12704; /* Amazon-style red price */
+  margin: 0 0 12px;
+}
+
+.product button {
+  background-color: #FFD814;
+  color: #111;
+  border: 1px solid #FCD200;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.product button:hover {
+  background-color: #F7CA00;
+}
+.product img {
+  width: 100%;              /* fills container width */
+  max-height: 160px;        /* keeps height in check */
+  object-fit: contain;      /* keeps image fully visible */
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  background: #fff;
+}
+
+  .product button {
+    margin-top: 10px;
+    background: #1e90ff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  input#searchInput {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    margin: 10px 0;
+  }
+
+  @media (max-width: 768px) {
+    header div {
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+
+    #cart-count {
+      top: auto;
+      bottom: 10px;
+      right: 10px;
+      position: fixed;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .product button {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -20px); }
+    10% { opacity: 1; transform: translate(-50%, 0); }
+    90% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
+  }
+ @media (max-width: 768px) {
+  #cart-count {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    position: fixed;
+    font-size: 18px;           /* increased font size */
+    padding: 10px 16px;        /* more padding for better visibility */
+    border-radius: 25px;       /* slightly rounder */
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  }
+}
+#category-buttons button {
+  padding: 10px 20px;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+#category-buttons button:hover {
+  background-color: #0d6efd;
+}
+#category-buttons button.active {
+  background-color: #0d6efd;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+#subcategory-buttons button {
+  padding: 8px 16px;
+  background-color: #87cefa; /* Light Sky Blue */
+  color: #003366; /* Deep Navy Text */
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#subcategory-buttons button:hover {
+  background-color: #76bde9; /* Slightly darker on hover */
+  transform: scale(1.03);
+}
+
+#subcategory-buttons button.active {
+  background-color: #5ca0d3; /* Active state - medium blue */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+<div id="custom-alert" style="
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333; /* Dark gray background */
+  color: #fff; /* White text */
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: none;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 1000;
+  animation: fadeInOut 2s ease-in-out;
+">
+  Item added to cart!
+</div>
+
+
+<header>
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+    <div>
+      <h1 style="margin: 0;">Manoj Kirana Store</h1>
+      <p style="margin: 0;">Daily Needs Delivered</p>
+    </div>
+    <div style="flex: 1; text-align: center; margin: 10px;">
+      <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()" 
+        style="width: 60%; max-width: 400px; padding: 10px; font-size: 16px; border-radius: 5px; border: none;" />
+    </div>
+    
+
+    <a href="cart.html" id="cart-count" title="View Cart"
+      style="text-decoration: none; background: white; color: #1e90ff; padding: 5px 10px; border-radius: 20px; font-weight: bold;">
+      🛒 <span id="cart-total">0</span>
+    </a>
+  </div>
+</header>
+
+
+
+<div class="container">
+  <h2>Select Category</h2>
+
+  <!-- Category Buttons -->
+  <div id="category-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+    <button onclick="showCategory('🛒 Grocery Categories')">🛒 Grocery Categories</button>
+    <button onclick="showCategory('🧼 Home Essentials')">🧼 Home Essentials</button>
+    <button onclick="showCategory('🧃 Dairy & Packaged Food')">🧃 Dairy & Packaged Food</button>
+     <button onclick="showCategory('🍅 Fresh Section')">🍅 Fresh Section</button>
+      <button onclick="showCategory('🧴 Beauty & Wellness')">🧴 Beauty & Wellness</button>
+      <button onclick="showCategory('👶 Baby Care')">👶 Baby Care</button>
+      <button onclick="showCategory('🧹 Cleaning Supplies')">🧹 Cleaning Supplies</button>
+      <button onclick="showCategory('🔧 Other Useful Categories')">🔧 Other Useful Categories</button>
+  
+    <button onclick="showAllProducts()">All Products</button>
+
+  </div>
+
+
+  <!-- Subcategory Buttons (Generated via JS) -->
+<div id="subcategory-buttons" style="display: none; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;"></div>
+
+  <!-- Product Section -->
+  <div class="product-list" id="product-list">
+    
+  <!-- 🛒 Grocery Categories -->
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Atta & Flour">
+  <img src="logo-url.png" alt="Aashirvaad Atta" />
+  <h3>Aashirvaad Whole Wheat Atta</h3>
+  <p>₹280 (5kg)</p>
+  <button onclick="addToCart('Aashirvaad Atta', 280)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Pulses (Dal)">
+  <img src="logo-url.png" alt="Toor Dal" />
+  <h3>Organic Toor Dal</h3>
+  <p>₹120/kg</p>
+  <button onclick="addToCart('Toor Dal', 120)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Sugar & Salt">
+  <img src="logo-url.png" alt="Sugar" />
+  <h3>Refined Sugar</h3>
+  <p>₹45/kg</p>
+  <button onclick="addToCart('Sugar', 45)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Spices & Masala">
+  <img src="logo-url.png" alt="Turmeric Powder" />
+  <h3>Haldi Powder</h3>
+  <p>₹40 (100g)</p>
+  <button onclick="addToCart('Turmeric Powder', 40)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Tea & Coffee">
+  <img src="logo-url.png" alt="Tea" />
+  <h3>Tata Tea Gold</h3>
+  <p>₹120 (250g)</p>
+  <button onclick="addToCart('Tata Tea', 120)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Snacks & Namkeen">
+  <img src="logo-url.png" alt="Bhujia" />
+  <h3>Haldiram Bhujia</h3>
+  <p>₹25 (200g)</p>
+  <button onclick="addToCart('Bhujia', 25)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Biscuits & Cookies">
+  <img src="logo-url.png" alt="Biscuits" />
+  <h3>Parle-G</h3>
+  <p>₹10 (80g)</p>
+  <button onclick="addToCart('Parle-G', 10)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Beverages">
+  <img src="logo-url.png" alt="Cold Drink" />
+  <h3>Coca-Cola</h3>
+  <p>₹40 (750ml)</p>
+  <button onclick="addToCart('Coca-Cola', 40)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Dry Fruits & Nuts">
+  <img src="logo-url.png" alt="Almonds" />
+  <h3>California Almonds</h3>
+  <p>₹180 (250g)</p>
+  <button onclick="addToCart('Almonds', 180)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🛒 Grocery Categories" data-subcategory="Pickles & Sauces">
+  <img src="logo-url.png" alt="Pickle" />
+  <h3>Mango Pickle</h3>
+  <p>₹60 (400g)</p>
+  <button onclick="addToCart('Mango Pickle', 60)">Add to Cart</button>
+</div>
+
+<!-- 🧼 Home Essentials -->
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Detergent & Cleaners">
+  <img src="logo-url.png" alt="Surf Excel" />
+  <h3>Surf Excel Quick Wash</h3>
+  <p>₹110 (500g)</p>
+  <button onclick="addToCart('Surf Excel', 110)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Toiletries">
+  <img src="logo-url.png" alt="Toothpaste" />
+  <h3>Colgate Strong Teeth</h3>
+  <p>₹55 (150g)</p>
+  <button onclick="addToCart('Toothpaste', 55)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Personal Care">
+  <img src="logo-url.png" alt="Face Cream" />
+  <h3>Ponds Moisturizer</h3>
+  <p>₹70 (50g)</p>
+  <button onclick="addToCart('Ponds Cream', 70)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Sanitary Products">
+  <img src="logo-url.png" alt="Sanitary Pad" />
+  <h3>Whisper Ultra</h3>
+  <p>₹90 (6 pads)</p>
+  <button onclick="addToCart('Whisper Pads', 90)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Room Fresheners">
+  <img src="logo-url.png" alt="Room Freshener" />
+  <h3>Godrej Aer Spray</h3>
+  <p>₹99 (220ml)</p>
+  <button onclick="addToCart('Room Freshener', 99)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧼 Home Essentials" data-subcategory="Kitchen Items">
+  <img src="logo-url.png" alt="Aluminum Foil" />
+  <h3>Freshwrapp Foil</h3>
+  <p>₹85 (9m)</p>
+  <button onclick="addToCart('Aluminum Foil', 85)">Add to Cart</button>
+</div>
+
+<!-- 🧃 Dairy & Packaged Food -->
+<div class="product" data-category="🧃 Dairy & Packaged Food" data-subcategory="Milk & Paneer">
+  <img src="logo-url.png" alt="Paneer" />
+  <h3>Amul Fresh Paneer</h3>
+  <p>₹85 (200g)</p>
+  <button onclick="addToCart('Paneer', 85)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧃 Dairy & Packaged Food" data-subcategory="Bread & Bakery">
+  <img src="logo-url.png" alt="Bread" />
+  <h3>Modern Bread</h3>
+  <p>₹35 (400g)</p>
+  <button onclick="addToCart('Bread', 35)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧃 Dairy & Packaged Food" data-subcategory="Instant Food">
+  <img src="logo-url.png" alt="Noodles" />
+  <h3>Maggi Instant Noodles</h3>
+  <p>₹14 (70g)</p>
+  <button onclick="addToCart('Maggi', 14)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧃 Dairy & Packaged Food" data-subcategory="Cold Drinks & Juices">
+  <img src="logo-url.png" alt="Juice" />
+  <h3>Real Mango Juice</h3>
+  <p>₹25 (200ml)</p>
+  <button onclick="addToCart('Mango Juice', 25)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧃 Dairy & Packaged Food" data-subcategory="Ice Cream & Frozen Items">
+  <img src="logo-url.png" alt="Ice Cream" />
+  <h3>Amul Vanilla Cup</h3>
+  <p>₹20</p>
+  <button onclick="addToCart('Vanilla Ice Cream', 20)">Add to Cart</button>
+</div>
+
+<!-- 🍅 Fresh Section -->
+<div class="product" data-category="🍅 Fresh Section" data-subcategory="Vegetables">
+  <img src="logo-url.png" alt="Tomato" />
+  <h3>Fresh Tomatoes</h3>
+  <p>₹30/kg</p>
+  <button onclick="addToCart('Tomatoes', 30)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🍅 Fresh Section" data-subcategory="Fruits">
+  <img src="logo-url.png" alt="Banana" />
+  <h3>Bananas</h3>
+  <p>₹40/dozen</p>
+  <button onclick="addToCart('Bananas', 40)">Add to Cart</button>
+</div>
+
+<!-- 🧴 Beauty & Wellness -->
+<div class="product" data-category="🧴 Beauty & Wellness" data-subcategory="Hair Oil & Shampoo">
+  <img src="logo-url.png" alt="Shampoo" />
+  <h3>Clinic Plus Shampoo</h3>
+  <p>₹60 (100ml)</p>
+  <button onclick="addToCart('Shampoo', 60)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧴 Beauty & Wellness" data-subcategory="Face Creams">
+  <img src="logo-url.png" alt="Fairness Cream" />
+  <h3>Fair & Lovely Cream</h3>
+  <p>₹55 (25g)</p>
+  <button onclick="addToCart('Fairness Cream', 55)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧴 Beauty & Wellness" data-subcategory="Soaps & Body Wash">
+  <img src="logo-url.png" alt="Soap" />
+  <h3>Dettol Soap</h3>
+  <p>₹32</p>
+  <button onclick="addToCart('Dettol Soap', 32)">Add to Cart</button>
+</div>
+
+<!-- 👶 Baby Care -->
+<div class="product" data-category="👶 Baby Care" data-subcategory="Baby Food">
+  <img src="logo-url.png" alt="Cerelac" />
+  <h3>Nestle Cerelac</h3>
+  <p>₹250 (300g)</p>
+  <button onclick="addToCart('Cerelac', 250)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="👶 Baby Care" data-subcategory="Diapers & Wipes">
+  <img src="logo-url.png" alt="Diapers" />
+  <h3>Pampers Diapers</h3>
+  <p>₹399 (Pack of 24)</p>
+  <button onclick="addToCart('Diapers', 399)">Add to Cart</button>
+</div>
+
+<!-- 🧹 Cleaning Supplies -->
+<div class="product" data-category="🧹 Cleaning Supplies" data-subcategory="Phenyl & Disinfectants">
+  <img src="logo-url.png" alt="Phenyl" />
+  <h3>Lizol Disinfectant</h3>
+  <p>₹95 (500ml)</p>
+  <button onclick="addToCart('Disinfectant', 95)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🧹 Cleaning Supplies" data-subcategory="Mops & Brushes">
+  <img src="logo-url.png" alt="Broom" />
+  <h3>Plastic Broom</h3>
+  <p>₹80</p>
+  <button onclick="addToCart('Broom', 80)">Add to Cart</button>
+</div>
+
+<!-- 🔧 Other Useful Categories -->
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="Stationery">
+  <img src="logo-url.png" alt="Pen" />
+  <h3>Reynolds Ball Pen</h3>
+  <p>₹10</p>
+  <button onclick="addToCart('Pen', 10)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="Plastic Items">
+  <img src="logo-url.png" alt="Bucket" />
+  <h3>Plastic Bucket</h3>
+  <p>₹90</p>
+  <button onclick="addToCart('Bucket', 90)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="Kitchen Tools">
+  <img src="logo-url.png" alt="Peeler" />
+  <h3>Vegetable Peeler</h3>
+  <p>₹25</p>
+  <button onclick="addToCart('Peeler', 25)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="Seasonal Offers">
+  <img src="logo-url.png" alt="Combo Pack" />
+  <h3>Summer Combo Pack</h3>
+  <p>₹299</p>
+  <button onclick="addToCart('Combo Pack', 299)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="New Arrivals">
+  <img src="logo-url.png" alt="New Item" />
+  <h3>New Energy Bar</h3>
+  <p>₹45</p>
+  <button onclick="addToCart('Energy Bar', 45)">Add to Cart</button>
+</div>
+
+<div class="product" data-category="🔧 Other Useful Categories" data-subcategory="Top Deals">
+  <img src="logo-url.png" alt="Offer" />
+  <h3>Flat 50% Combo</h3>
+  <p>₹150</p>
+  <button onclick="addToCart('Combo Offer', 150)">Add to Cart</button>
+</div>
+
+  </div>
+  <p id="no-results" style="display:none; font-weight:bold; color:#888; margin-top: 20px;">No products found.</p>
+
+</div>
+
+  
+  </div>
+</div>
+
+<script>
+  function addToCart(name, price) {
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const existing = cart.find(item => item.name === name);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ name, price, quantity: 1 });
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  showCustomAlert(name + ' added to cart!');
+  updateCartCount();
+}
+
+function showCustomAlert(message) {
+  const alertBox = document.getElementById('custom-alert');
+  alertBox.textContent = 'Bright General Store: ' + message;
+  alertBox.style.display = 'block';
+  setTimeout(() => {
+    alertBox.style.display = 'none';
+  }, 2000);
+}
+
+function updateCartCount() {
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  let count = cart.reduce((total, item) => total + item.quantity, 0);
+  document.getElementById('cart-total').textContent = count;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+  showCategory('all'); // Show all products by default
+});
+
+function showCategory(category) {
+  const products = document.querySelectorAll(".product");
+  const buttons = document.querySelectorAll("#category-buttons button");
+
+  products.forEach(product => {
+    const productCategory = product.getAttribute("data-category");
+    product.style.display = (category === 'all' || productCategory === category) ? "block" : "none";
+  });
+
+  // Highlight active category button
+  buttons.forEach(btn => btn.classList.remove("active"));
+  const selectedBtn = Array.from(buttons).find(btn => btn.textContent.toLowerCase().includes(category));
+  if (selectedBtn) selectedBtn.classList.add("active");
+}
+
+function filterProducts() {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const products = document.querySelectorAll(".product");
+  const noResults = document.getElementById("no-results");
+  let visibleCount = 0;
+
+  // Reset category highlight
+  document.querySelectorAll("#category-buttons button").forEach(btn => btn.classList.remove("active"));
+  const allBtn = Array.from(document.querySelectorAll("#category-buttons button")).find(btn => btn.textContent.toLowerCase().includes("all"));
+  if (allBtn) allBtn.classList.add("active");
+
+  products.forEach(product => {
+    const name = product.querySelector("h3").textContent.toLowerCase();
+
+    if (name.includes(input)) {
+      product.style.display = "block";
+      visibleCount++;
+    } else {
+      product.style.display = "none";
+    }
+  });
+
+  noResults.style.display = visibleCount === 0 ? "block" : "none";
+}
+const subcategoryMap = {
+  "🛒 Grocery Categories": [
+    "Atta & Flour",
+    "Pulses (Dal)",
+    "Sugar & Salt",
+    "Spices & Masala",
+    "Tea & Coffee",
+    "Snacks & Namkeen",
+    "Biscuits & Cookies",
+    "Beverages",
+    "Dry Fruits & Nuts",
+    "Pickles & Sauces"
+  ],
+  "🧼 Home Essentials": ["Detergent & Cleaners", "Toiletries", "Personal Care",  "Sanitary Products" , "Room Fresheners", "Kitchen Items"],
+  "🧃 Dairy & Packaged Food": [
+  "Milk & Paneer",
+  "Bread & Bakery",
+  "Instant Food",
+  "Cold Drinks & Juices",
+  "Ice Cream & Frozen Items"
+],
+
+"🍅 Fresh Section": [
+  "Vegetables",
+  "Fruits"
+],
+
+"🧴 Beauty & Wellness": [
+  "Hair Oil & Shampoo",
+  "Face Creams",
+  "Soaps & Body Wash"
+],
+
+"👶 Baby Care": [
+  "Baby Food",
+  "Diapers & Wipes"
+],
+
+"🧹 Cleaning Supplies": [
+  "Phenyl & Disinfectants",
+  "Mops & Brushes"
+],
+
+"🔧 Other Useful Categories": [
+  "Stationery",
+  "Plastic Items",
+  "Kitchen Tools",
+  "Seasonal Offers",
+  "New Arrivals",
+  "Top Deals"
+],
+  // Add other category: [subcategories] here
+};
+
+function showCategory(category) {
+  const products = document.querySelectorAll(".product");
+  const subcatContainer = document.getElementById("subcategory-buttons");
+
+  // Hide all products initially
+  products.forEach(p => p.style.display = "none");
+
+  // Show subcategory buttons
+  if (subcategoryMap[category]) {
+    subcatContainer.innerHTML = ""; // Clear previous
+    subcatContainer.style.display = "flex";
+    subcategoryMap[category].forEach(sub => {
+      const btn = document.createElement("button");
+      btn.textContent = sub;
+      btn.onclick = () => showSubcategory(category, sub);
+      subcatContainer.appendChild(btn);
+    });
+  } else {
+    subcatContainer.style.display = "none";
+  }
+}
+
+function showSubcategory(category, subcategory) {
+  const products = document.querySelectorAll(".product");
+  const subButtons = document.querySelectorAll("#subcategory-buttons button");
+
+  products.forEach(product => {
+    const productCat = product.getAttribute("data-category");
+    const productSub = product.getAttribute("data-subcategory");
+    product.style.display = (productCat === category && productSub === subcategory) ? "block" : "none";
+  });
+
+  // Highlight the active subcategory
+  subButtons.forEach(btn => btn.classList.remove("active"));
+  const activeBtn = Array.from(subButtons).find(btn => btn.textContent === subcategory);
+  if (activeBtn) activeBtn.classList.add("active");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+  showCategory('🛒 Grocery Categories'); // Or use 'all' if you want to show everything
+});
+function showAllProducts() {
+  document.querySelectorAll(".product").forEach(p => p.style.display = "block");
+  document.getElementById("subcategory-buttons").style.display = "none";
+}
+
+
+</script>
+
+
+</body>
+</html>   

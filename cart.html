@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+
+    header {
+      background: #1e90ff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f8ff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 14px;
+    }
+
+    input[type='number'] {
+      width: 50px;
+      padding: 5px;
+      text-align: center;
+    }
+
+    .btn-order, .btn-back, .btn-delete {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .btn-order {
+      background: #25d366;
+      color: white;
+    }
+
+    .btn-delete {
+      background: #ff4d4d;
+      color: white;
+    }
+
+    .btn-back {
+      background: white;
+      color: #1e90ff;
+      font-weight: bold;
+      position: absolute;
+      left: 20px;
+      top: 15px;
+    }
+
+    .track-link {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      background: white;
+      color: #1e90ff;
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .total {
+      font-size: 20px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .payment-info {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .payment-box {
+      margin-top: 10px;
+    }
+
+    .payment-box img {
+      width: 180px;
+      height: auto;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+
+    .upi-link {
+      display: inline-block;
+      margin-top: 8px;
+      background: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .customer-info {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .customer-info input {
+      padding: 10px;
+      margin: 5px;
+      width: 240px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    #confirmation {
+      background-color: #e6ffe6;
+      border: 1px solid #28a745;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    #confirmation p {
+      margin: 10px 0;
+    }
+
+    #confirmation a {
+      color: #1e90ff;
+      text-decoration: underline;
+    }
+
+    #confirmation button {
+      background: #1e90ff;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .customer-info input {
+        width: 90%;
+      }
+
+      .btn-order, .btn-delete {
+        width: 90%;
+      }
+
+      table, th, td {
+        font-size: 13px;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <button onclick="goBack()" class="btn-back">← Back to Shop</button>
+    <h1>Your Cart</h1>
+    <a href="track.html" class="track-link">📦 Track Your Order</a>
+  </header>
+
+  <div class="container">
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price (₹)</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="total">
+      Total: ₹<span id="total">0</span>
+    </div>
+
+    <div class="payment-info">
+      <h3>Pay using UPI before placing order</h3>
+      <div class="payment-box">
+        <p>UPI ID: <strong>nikhiljaiswal575-1@oksbi</strong></p>
+        <a class="upi-link" href="upi://pay?pa=nikhiljaiswal575-1@oksbi&pn=Nikhil%20Jaiswal&cu=INR" target="_blank">Click to Pay via UPI</a>
+        <br>
+        <img src="your-qr-image-url-here.png" alt="Pay via QR Code" />
+      </div>
+    </div>
+
+    <div class="customer-info">
+      <h3>Enter Your Name & Mobile</h3>
+      <input type="text" id="custName" placeholder="Your Name" required>
+      <input type="text" id="custMobile" placeholder="Mobile Number" required>
+    </div>
+
+    <div style="text-align: center;">
+      <button class="btn-order" onclick="placeOrder()">✅ I Paid – Place Order</button>
+    </div>
+
+    <div id="confirmation" style="display:none;">
+      ✅ <strong>Order placed!</strong> Status: <span id="order-status">Pending</span><br>
+      <strong>Your order ID:</strong> <span id="order-id"></span>
+      <p>✅ You can track your order <a href="track.html" target="_blank">here</a></p>
+      <p>
+        <button onclick="downloadPDF()">📄 Download Receipt (PDF)</button>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+
+    function loadCart() {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      let tbody = document.querySelector("#cart-table tbody");
+      let total = 0;
+      tbody.innerHTML = "";
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        const row = `<tr>
+          <td>${item.name}</td>
+          <td>₹${item.price}</td>
+          <td>
+            <button onclick="changeQty(${index}, -1)">−</button>
+            <input type="number" min="1" value="${item.quantity}" readonly />
+            <button onclick="changeQty(${index}, 1)">+</button>
+          </td>
+          <td>₹${subtotal}</td>
+          <td><button class='btn-delete' onclick='deleteItem(${index})'>Delete</button></td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("total").innerText = total;
+    }
+
+    function deleteItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function changeQty(index, delta) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart[index].quantity += delta;
+      if (cart[index].quantity < 1) cart[index].quantity = 1;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function placeOrder() {
+      const name = document.getElementById("custName").value.trim();
+      const mobile = document.getElementById("custMobile").value.trim();
+
+      if (!name || !mobile) {
+        alert("Please enter your name and mobile number.");
+        return;
+      }
+
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      let total = 0;
+      let items = cart.map(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        return { ...item, subtotal };
+      });
+
+      const order = {
+        id: "ORD" + Date.now(),
+        name,
+        mobile,
+        items,
+        total,
+        status: "Pending",
+        datetime: new Date().toLocaleString()
+      };
+
+      let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      orders.push(order);
+      localStorage.setItem("orders", JSON.stringify(orders));
+
+      localStorage.setItem("latestOrderId", order.id);
+      localStorage.removeItem("cart");
+
+      document.getElementById("order-status").innerText = order.status;
+      document.getElementById("order-id").innerText = order.id;
+      document.getElementById("confirmation").style.display = "block";
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const orderId = document.getElementById("order-id").textContent;
+      const name = document.getElementById("custName").value;
+      const mobile = document.getElementById("custMobile").value;
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const order = orders.find(o => o.id === orderId);
+
+      let y = 20;
+      doc.setFontSize(16);
+      doc.text("Bright General Store", 20, y);
+
+      const now = new Date();
+      const dateTime = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+      doc.text(`Date: ${dateTime}`, 150, 20);
+
+      y += 10;
+      doc.setFontSize(12);
+      doc.text(`Order ID: ${order.id}`, 20, y);
+      y += 8;
+      doc.text(`Customer Name: ${name}`, 20, y);
+      y += 8;
+      doc.text(`Mobile: ${mobile}`, 20, y);
+      y += 10;
+      doc.text("Products:", 20, y);
+      y += 8;
+
+      order.items.forEach(item => {
+        doc.text(`${item.name} - ₹${item.price} x ${item.quantity} = ₹${item.subtotal}`, 25, y);
+        y += 8;
+      });
+
+      y += 5;
+      doc.text(`Total Amount: ₹${order.total}`, 20, y);
+
+      doc.save(`${order.id}_receipt.pdf`);
+    }
+
+    window.onload = loadCart;
+  </script>
+
+</body>
+</html>

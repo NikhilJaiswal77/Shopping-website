@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Fortified Premium Basmati Rice",
+    "price": 50,
+    "unit": "₹50/kg",
+    "image": "logo-url.png",
+    "category": "rice"
+  },
+  {
+    "name": "Refined Cooking Oil",
+    "price": 120,
+    "unit": "₹120/litre",
+    "image": "logo-url.png",
+    "category": "oil"
+  },
+  {
+    "name": "Herbal Soap",
+    "price": 30,
+    "unit": "₹30",
+    "image": "logo-url.png",
+    "category": "soap"
+  }
+]

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Track Your Order</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      color: #1e90ff;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      font-size: 15px;
+    }
+
+    input[type="text"] {
+      padding: 12px 15px;
+      font-size: 16px;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #1e90ff;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0077cc;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #f6f9fc;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: left;
+      color: #333;
+    }
+
+    .result strong {
+      color: #000;
+    }
+
+    .status {
+      font-weight: bold;
+      color: #ff9800;
+    }
+
+    .status.confirmed {
+      color: #28a745;
+    }
+
+    .not-found {
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      input[type="text"] {
+        width: 95%;
+      }
+
+      .result {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Track Your Order</h2>
+    <p>Enter your Order ID to check the status</p>
+    
+    <input type="text" id="orderIdInput" placeholder="Enter Order ID (e.g., ORD1728651729210)" />
+    <br>
+    <button onclick="trackOrder()">Check Status</button>
+
+    <div id="result" class="result" style="display:none;"></div>
+    <div id="not-found" class="not-found" style="display:none;">❌ Order not found</div>
+  </div>
+
+  <script>
+    function trackOrder() {
+      const inputId = document.getElementById("orderIdInput").value.trim();
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const resultEl = document.getElementById("result");
+      const notFoundEl = document.getElementById("not-found");
+
+      resultEl.style.display = "none";
+      notFoundEl.style.display = "none";
+
+      const order = orders.find(o => o.id === inputId);
+
+      if (order) {
+        let itemsHtml = order.items.map(i =>
+          `• ${i.name} × ${i.quantity} = ₹${i.subtotal}`
+        ).join("<br>");
+
+        let statusText = order.status === "Confirmed"
+          ? "<span class='status confirmed'>✅ Confirmed by Admin</span>"
+          : "<span class='status'>⏳ Pending (Awaiting confirmation)</span>";
+
+        let confirmationTimeText = order.confirmedAt 
+          ? `<strong>Confirmed At:</strong> ${order.confirmedAt}<br>` 
+          : "";
+
+        resultEl.innerHTML = `
+          <p>
+            <strong>Order ID:</strong> ${order.id}<br>
+            <strong>Date & Time:</strong> ${order.datetime || "N/A"}<br>
+            <strong>Name:</strong> ${order.name}<br>
+            <strong>Mobile:</strong> ${order.mobile}<br>
+            <strong>Status:</strong> ${statusText}<br>
+            ${confirmationTimeText}
+            <strong>Total:</strong> ₹${order.total}
+          </p>
+          <p><strong>Items:</strong><br>${itemsHtml}</p>
+        `;
+        resultEl.style.display = "block";
+      } else {
+        notFoundEl.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
